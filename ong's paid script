@@ -1,0 +1,505 @@
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "melvin best paid sript",
+    LoadingTitle = "Execute Script melvin",
+    LoadingSubtitle = "By melvin",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "Grove-G"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "qeumfU6uQ8",
+        RememberJoins = true
+    },
+    KeySystem = true,
+    KeySettings = {
+        Title = "Grove",
+        Subtitle = "Key System",
+        Note = "💎Premium Script💎 - melvin",
+        FileName = "Key",
+        SaveKey = false,
+        GrabKeyFromSite = true,
+        Key = {"hewskifree"}
+    }
+})
+
+local MainTab = Window:CreateTab("Home", nil)
+local MainSection = MainTab:CreateSection("🏠-Main-🏠")
+
+local Button = MainTab:CreateButton({
+    Name = "Discord-Link",
+    Callback = function()
+        loadstring(game:HttpGet(''))()
+    end
+})
+
+local Button = MainTab:CreateButton({
+    Name = "Low HP Run",
+    Callback = function()
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local isTeleporting = false -- Teleport işleminin sürekli olmasını kontrol eder.
+
+-- Karakteri bir defa teleport eden fonksiyon
+local function teleportStep()
+    local direction = character.HumanoidRootPart.CFrame.LookVector -- Karakterin baktığı yön
+    local newPosition = character.HumanoidRootPart.Position + direction * 10 -- 10 birim ileri
+    character:SetPrimaryPartCFrame(CFrame.new(newPosition))
+end
+
+-- Teleport işlemini başlatan ve durduran fonksiyon
+local function manageTeleport()
+    if humanoid.Health <= 20 and not isTeleporting then
+        isTeleporting = true
+        -- Teleport işlemi başlasın (20 can altında sürekli yapacak)
+        while isTeleporting do
+            teleportStep()
+            wait(0.1) -- Her teleport arasında kısa bir bekleme
+        end
+    elseif humanoid.Health >= 23 and isTeleporting then
+        -- Teleport işlemini durdur
+        isTeleporting = false
+    end
+end
+
+-- Sağlık değişimlerini dinle
+humanoid.HealthChanged:Connect(function()
+    manageTeleport()
+end)
+
+    end
+})
+
+local Button = MainTab:CreateButton({
+    Name = "Delet-(J)",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/nGp4HFHa'))()
+    end
+})
+
+local Button = MainTab:CreateButton({
+    Name = "Destroyed-Gui",
+    Callback = function()
+        --CALL
+    end
+})
+
+local AimbotTab = Window:CreateTab("Aimbot", nil)
+local Section = AimbotTab:CreateSection("😎-Aimbot-😎")
+
+local Button = AimbotTab:CreateButton({
+    Name = "Un Active Aimbot",
+    Callback = function()
+        if not aimbotEnabled then
+            -- İlk tıklama: Aimbot devre dışı bırak
+            aimbotEnabled = false
+
+            -- FOV çemberi ve ok çizimini gizle
+            if fovCircle then
+                fovCircle.Visible = false
+                fovCircle:Remove()  -- FOV çemberini tamamen sil
+                fovCircle = nil  -- Referansı temizle
+            end
+            if arrow then
+                arrow.Visible = false
+                arrow:Remove()  -- Ok çizimini tamamen sil
+                arrow = nil  -- Referansı temizle
+            end
+
+            -- RenderStepped bağlantısını temizle
+            if RenderSteppedConnection then
+                RenderSteppedConnection:Disconnect()
+                RenderSteppedConnection = nil
+            end
+
+            -- Kitlenme işlemi devre dışı
+            Aiming = false
+            print("Aimbot devre dışı bırakıldı.")
+        else
+            -- Eğer aimbotEnabled true ise, durumu tersine çevir ve aktif hale getir
+            aimbotEnabled = true
+
+            -- FOV çemberi ve ok çizimini oluştur
+            if not fovCircle then
+                fovCircle = Drawing.new("Circle")
+                fovCircle.Radius = FOVRadius
+                fovCircle.Color = Color3.fromRGB(255, 0, 255)
+                fovCircle.Thickness = 2
+                fovCircle.Transparency = 1
+                fovCircle.Filled = false
+            end
+
+            if not arrow then
+                arrow = Drawing.new("Line")
+                arrow.Visible = true
+                arrow.Color = Color3.fromRGB(255, 0, 0)
+                arrow.Thickness = 2
+            end
+
+            -- Aimbot etkinleştirildiğinde, render işlemi başlat
+            RenderSteppedConnection = RunService.RenderStepped:Connect(function()
+                fovCircle.Position = UserInputService:GetMouseLocation()  -- FOV çemberini fare konumuna yerleştir
+
+                -- Hedefi takip et
+                if Aiming then
+                    local closestPlayer = getClosestPlayerInFOV()
+                    if closestPlayer then
+                        aimAt(closestPlayer, AimSmoothing)
+                    end
+                end
+
+                -- Ok çizimi
+                local closestPlayer = getClosestPlayerInFOV()
+                if closestPlayer then
+                    drawArrowToTarget(closestPlayer)
+                else
+                    arrow.Visible = false
+                end
+            end)
+
+            -- Aimbot kitlenmesi aktif
+            Aiming = true
+            print("Aimbot etkinleştirildi.")
+        end
+    end
+})
+
+local aimAtHead = true 
+
+local Slider = AimbotTab:CreateSlider({
+    Name = "Aimbot",
+    Range = {50, 600},
+    Increment = 10, 
+    Suffix = "Size", 
+    CurrentValue = 100, 
+    Flag = "Slider1", 
+    Callback = function(Value)
+        -- Mevcut çember rengini koru
+        local previousColor = fovCircle and fovCircle.Color or Color3.fromRGB(255, 255, 255) -- Önceki renk veya varsayılan
+
+        -- Önceki tüm nesneleri ve bağlantıları temizle
+        if fovCircle then
+            fovCircle:Remove()
+            fovCircle = nil
+        end
+        if arrow then
+            arrow:Remove()
+            arrow = nil
+        end
+        if RenderSteppedConnection then
+            RenderSteppedConnection:Disconnect()
+            RenderSteppedConnection = nil
+        end
+        if InputBeganConnection then
+            InputBeganConnection:Disconnect()
+            InputBeganConnection = nil
+        end
+        if InputEndedConnection then
+            InputEndedConnection:Disconnect()
+            InputEndedConnection = nil
+        end
+
+        -- Yeni FOV çemberi ve aimbot ayarları
+        local Players = game:GetService("Players")
+        local UserInputService = game:GetService("UserInputService")
+        local RunService = game:GetService("RunService")
+        local LocalPlayer = Players.LocalPlayer
+        local Camera = game.Workspace.CurrentCamera
+        local AimPartName = "Head"
+        local HumanoidRootPartName = "HumanoidRootPart"
+
+        local AimSmoothing = 0.2
+        local AimDistance = 300
+        local FOVRadius = Value -- Slider'dan gelen değer
+        local Aiming = false
+
+        -- Yeni FOV çemberi
+        fovCircle = Drawing.new("Circle")
+        fovCircle.Radius = FOVRadius
+        fovCircle.Color = previousColor -- Önceki renk korunur
+        fovCircle.Thickness = 2
+        fovCircle.Transparency = 1
+        fovCircle.Filled = false
+
+        -- Yeni ok çizimi
+        arrow = Drawing.new("Line")
+        arrow.Visible = false
+        arrow.Color = Color3.fromRGB(255, 0, 0)
+        arrow.Thickness = 2
+
+        -- Nişan alma fonksiyonları
+        local function aimAt(targetPlayer, smooth)
+            local character = targetPlayer.Character
+            if character then
+                local targetPart
+                if aimAtHead then
+                    targetPart = character:FindFirstChild("Head")  -- Hedef kafa
+                else
+                    targetPart = character:FindFirstChild("HumanoidRootPart")  -- Hedef torso (HumanoidRootPart)
+                end
+
+                if targetPart then
+                    local velocity = character.HumanoidRootPart.Velocity
+                    local LookAt
+                    if velocity.Magnitude < 0.07 then
+                        LookAt = targetPart.Position
+                    else
+                        local leadTime = math.min(velocity.Magnitude * 0.14, 140)
+                        LookAt = targetPart.Position + (velocity.Unit * leadTime)
+                    end
+
+                    -- Seçilen parça (Kafa veya Torso) ile nişan al
+                    Camera.CFrame = CFrame.new(Camera.CFrame.Position, LookAt:Lerp(targetPart.Position, smooth))
+                end
+            end
+        end
+
+        local function isInFOV(targetPlayer)
+            local character = targetPlayer.Character
+            if character and character:FindFirstChild(AimPartName) then
+                local aimPart = character[AimPartName]
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid and humanoid.Health > 1 then
+                    local screenPosition, onScreen = Camera:WorldToViewportPoint(aimPart.Position)
+                    local distanceFromMouse = (Vector2.new(screenPosition.X, screenPosition.Y) - UserInputService:GetMouseLocation()).Magnitude
+                    return onScreen and distanceFromMouse <= FOVRadius
+                end
+            end
+            return false
+        end
+
+        local function getClosestPlayerInFOV()
+            local closestPlayer = nil
+            local shortestDistance = AimDistance
+
+            for _, player in pairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    local character = player.Character
+                    local humanoid = character:FindFirstChildOfClass("Humanoid")
+                    if humanoid and humanoid.Health > 1 and character:FindFirstChild("HumanoidRootPart") and isInFOV(player) then
+                        local distance = (LocalPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestPlayer = player
+                            shortestDistance = distance
+                        end
+                    end
+                end
+            end
+            return closestPlayer
+        end
+
+        local function drawArrowToTarget(targetPlayer)
+            local character = targetPlayer.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.Health > 1 and character:FindFirstChild(HumanoidRootPartName) then
+                local aimPart = character[HumanoidRootPartName]
+                local screenPosition, onScreen = Camera:WorldToViewportPoint(aimPart.Position)
+
+                if onScreen then
+                    local mouseLocation = UserInputService:GetMouseLocation()
+                    arrow.From = mouseLocation
+                    arrow.To = Vector2.new(screenPosition.X, screenPosition.Y)
+                    arrow.Color = isInFOV(targetPlayer) and Color3.fromRGB(255, 165, 0) or Color3.fromRGB(255, 0, 0)
+                    arrow.Visible = true
+                else
+                    arrow.Visible = false
+                end
+            else
+                arrow.Visible = false
+            end
+        end
+
+        -- Giriş kontrolleri
+        InputBeganConnection = UserInputService.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                Aiming = true
+            end
+            if input.KeyCode == Enum.KeyCode.P then
+                Aiming = false
+            end
+        end)
+
+        InputEndedConnection = UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                Aiming = false
+            end
+        end)
+
+        -- Render döngüsü
+        RenderSteppedConnection = RunService.RenderStepped:Connect(function()
+            fovCircle.Position = UserInputService:GetMouseLocation()
+
+            if Aiming then
+                local closestPlayer = getClosestPlayerInFOV()
+                if closestPlayer then
+                    aimAt(closestPlayer, AimSmoothing)
+                end
+            end
+
+            local closestPlayer = getClosestPlayerInFOV()
+            if closestPlayer then
+                drawArrowToTarget(closestPlayer)
+            else
+                arrow.Visible = false
+            end
+        end)
+    end
+})
+
+local FOVColorPicker = AimbotTab:CreateColorPicker({
+    Name = "FOV Circle Color",
+    Color = Color3.fromRGB(255, 255, 255),
+    Flag = "FOVColorPicker",
+    Callback = function(Value)
+        if fovCircle then
+            fovCircle.Color = Value
+        end
+    end
+})
+
+local Dropdown = AimbotTab:CreateDropdown({
+   Name = "Aimbot Target",
+   Options = {"Head","Body"},
+   CurrentOption = {"Head"}, 
+   MultipleOptions = false,
+   Flag = "Dropdown1",
+   Callback = function(Options)
+       if Options[1] == "Head" then
+           aimAtHead = true
+       else
+           aimAtHead = false
+       end
+   end
+})
+
+local Slider = AimbotTab:CreateSlider({
+    Name = "Fov Transparent",
+    Range = {0, 10},
+    Increment = 2,
+    Suffix = "Visible",
+    CurrentValue = 5,
+    Flag = "Slider1",
+    Callback = function(Value)
+        if fovCircle then
+            local transparency = Value / 10
+            fovCircle.Transparency = transparency
+        end
+    end
+})
+
+local EspTab = Window:CreateTab("Esp", nil)
+local Section = EspTab:CreateSection("🤯-ESP-🤯")
+
+local IButton = EspTab:CreateButton({
+    Name = "💎Inventory💎",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/4b3B5nmZ'))()
+    end
+})
+
+local NButton = EspTab:CreateButton({
+    Name = "Name",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/SDSsfiVN'))()
+    end
+})
+
+local BButton = EspTab:CreateButton({
+    Name = "Box",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/FVpv6mnq'))()
+    end
+})
+
+local HButton = EspTab:CreateButton({
+    Name = "Health",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/mxLC8P1L'))()
+    end
+})
+
+local HButton = EspTab:CreateButton({
+    Name = "Distance",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/nDnBxSyZ'))()
+    end
+})
+
+local HButton = EspTab:CreateButton({
+    Name = "Atm",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/ikvvvwYW'))()
+    end
+})
+
+
+local EspTab = Window:CreateTab("AutoFarm", nil)
+local Section = EspTab:CreateSection("🌾-AutoFarm-🌾") 
+
+local HButton = EspTab:CreateButton({
+    Name = "Chips Work                                                                                (P) stop",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/5uXv990f'))()
+    end
+})
+
+local HButton = EspTab:CreateButton({
+    Name = "Box Work                                                                                (P) stop",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/Yitz4dyk'))()
+    end
+})
+
+
+local HButton = EspTab:CreateButton({
+    Name = "Trash Work                                                                              (P) stop",
+    Callback = function()
+        loadstring(game:HttpGet('https://pastebin.com/raw/umU0zUNV'))()
+    end
+})
+
+local LootTab = Window:CreateTab("Loot", nil)
+local Section = LootTab:CreateSection("💼-Free Loot-💼")
+
+local HButton = LootTab:CreateButton({
+    Name = "💎Free Loot💎",
+    Callback = function()
+        
+    end
+})
+
+local CHTab = Window:CreateTab("Character", nil)
+local Section = CHTab:CreateSection("👤-Character Setting-👤")
+
+
+local Slider = CHTab:CreateSlider({
+    Name = "Walk Speed",
+    Range = {0, 22},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 14,
+    Flag = "Slider1",
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+    end
+})
+
+
+local Slider = CHTab:CreateSlider({
+    Name = "Character Fov", 
+    Range = {90, 120}, 
+    Increment = 1,
+    Suffix = "Size", 
+    CurrentValue = 90, 
+    Flag = "Slider1",
+    Callback = function(Value)
+        local Camera = game:GetService("Workspace").CurrentCamera
+        Camera.FieldOfView = Value
+    end
+})
