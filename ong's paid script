@@ -22,7 +22,7 @@ local Window = Rayfield:CreateWindow({
         FileName = "Key",
         SaveKey = false,
         GrabKeyFromSite = true,
-        Key = {"hewskifree"}
+        Key = {"OBLOCKONTOP"}
     }
 })
 
